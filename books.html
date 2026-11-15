@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q2 – Retrieve and Display JSON Data</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: "Inter", system-ui, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      padding: 48px 16px;
+    }
+    main { width: 100%; max-width: 600px; }
+    h1 { font-family: "Space Grotesk", "Inter", sans-serif; font-size: 1.6rem; margin: 0 0 4px; }
+    .subtitle { color: #8b949e; margin: 0 0 24px; }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: .06em; color: #8b949e; margin: 0 0 8px; }
+    .value { font-size: 1.15rem; margin: 0; }
+    ul { margin: 0; padding-left: 20px; }
+    li { margin: 4px 0; }
+    #error {
+      display: none;
+      background: #3d1214;
+      border: 1px solid #f85149;
+      color: #ffb3ad;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Q2 – Retrieve and Display JSON Data</h1>
+    <p class="subtitle">Data loaded from <code>books.json</code> with <code>fetch()</code>.</p>
+
+    <section class="card">
+      <h2>(a) Title of the first book</h2>
+      <p class="value" id="firstTitle">Loading…</p>
+    </section>
+
+    <section class="card">
+      <h2>(b) Author of the second book</h2>
+      <p class="value" id="secondAuthor">Loading…</p>
+    </section>
+
+    <section class="card">
+      <h2>(c) Genres of both books</h2>
+      <ul id="genreList"></ul>
+    </section>
+
+    <p id="error" role="alert"></p>
+  </main>
+
+  <script>
+    // Elements used for output
+    const firstTitle = document.getElementById("firstTitle");
+    const secondAuthor = document.getElementById("secondAuthor");
+    const genreList = document.getElementById("genreList");
+    const errorBox = document.getElementById("error");
+
+    function showError(message) {
+      firstTitle.textContent = "-";
+      secondAuthor.textContent = "-";
+      genreList.replaceChildren();
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+    }
+
+    async function loadBooks() {
+      try {
+        // 1. Request the JSON file
+        const response = await fetch("books.json");
+
+        // 2. fetch() only rejects on network failure, so check the HTTP status
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        // 3. Parse the JSON (throws SyntaxError if the file is invalid)
+        const data = await response.json();
+
+        // 4. Check the structure before using it
+        if (!Array.isArray(data.books) || data.books.length < 2) {
+          throw new Error("Unexpected data format");
+        }
+
+        const books = data.books;
+
+        // (a) Title of the first book
+        firstTitle.textContent = books[0].title;
+
+        // (b) Author of the second book
+        secondAuthor.textContent = books[1].author;
+
+        // (c) Genres grouped by book title
+        books.forEach(function (book) {
+          const li = document.createElement("li");
+          li.textContent = book.title + " — " + book.genres.join(", ");
+          genreList.appendChild(li);
+        });
+      } catch (error) {
+        console.error("Failed to load books.json:", error);
+        showError("Sorry, the book data could not be loaded. Please make sure books.json exists, contains valid JSON, and the page is opened through a local server.");
+      }
+    }
+
+    loadBooks();
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q3 – Native JavaScript vs jQuery</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: "Inter", system-ui, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      padding: 48px 16px;
+    }
+    main { width: 100%; max-width: 560px; }
+    h1 { font-family: "Space Grotesk", "Inter", sans-serif; font-size: 1.6rem; margin: 0 0 24px; }
+    #myElement, #myDIV {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    #myDIV p { margin: 0; }
+    button {
+      background: #58a6ff;
+      color: #0d1117;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #output { margin-top: 16px; font-family: "JetBrains Mono", Consolas, monospace; color: #3fb950; min-height: 1.6em; }
+
+    /* Required class from the lab sheet */
+    .myStyle { background-color: coral; padding: 16px; }
+    /* #myDIV's card style above uses an ID selector, which beats a plain class,
+       so repeat the coral background with higher specificity */
+    #myDIV.myStyle { background-color: coral; color: #1b1f24; border-color: coral; }
+  </style>
+
+  <!-- jQuery 4.0.0, official full build (not slim) -->
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Q3 – Native JavaScript vs jQuery</h1>
+
+    <div id="myElement">Original Text</div>
+
+    <div id="myDIV"><p>I am a myDIV.</p></div>
+
+    <button id="myButton">Click me</button>
+    <p id="output" role="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    // Run after the DOM is ready
+    $(function () {
+      // (a) Native: document.getElementById("myElement").textContent = "Modified Text";
+      $("#myElement").text("Modified Text");
+
+      // (b) Native: document.querySelector("#myDIV").classList.add("myStyle");
+      $("#myDIV").addClass("myStyle");
+
+      // (c) Native: document.getElementById("myButton").addEventListener("click", () => alert("Button clicked!"));
+      $("#myButton").on("click", function () {
+        $("#output").text("Button clicked!");   // visible on the page
+        alert("Button clicked!");               // same as the native version
+      });
+    });
+  </script>
+</body>
+</html>
